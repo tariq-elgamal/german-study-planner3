@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>German Intensive Plan – Begegnungen + Erkundungen</title>
+<style>
+  /* ── FONTS ── */
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600&display=swap');
+
+  /* ── TOKENS ── */
+  :root {
+    --bg:       #0d0f14;
+    --surface:  #161921;
+    --card:     #1c1f2a;
+    --border:   #2a2e3d;
+    --accent:   #5b8af0;
+    --accent2:  #a78bfa;
+    --accent3:  #34d399;
+    --gold:     #f5c842;
+    --text:     #e8eaf0;
+    --muted:    #7a7f94;
+    --danger:   #f87171;
+    --sans:     'Sora', sans-serif;
+    --serif:    'DM Serif Display', serif;
+    --mono:     'DM Mono', monospace;
+    --r:        10px;
+    --r-lg:     16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .app { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 6rem; }
+
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-bottom: .75rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: .75rem;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--mono);
+    margin-bottom: .75rem;
+  }
+  .section { margin-bottom: 2.5rem; }
+
+  .control-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.5rem;
+  }
+  .control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: .4rem;
+    font-family: var(--mono);
+  }
+  .field input[type="date"],
+  .field select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--text);
+    padding: .55rem .85rem;
+    font-family: var(--sans);
+    font-size: 14px;
+    outline: none;
+  }
+  .field input[type="date"]:focus,
+  .field select:focus { border-color: var(--accent); }
+  .field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(.6); cursor: pointer; }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .slider-row label { font-size: 12px; color: var(--muted); font-family: var(--mono); white-space: nowrap; }
+  .slider-row input[type="range"] {
+    flex: 1;
+    min-width: 120px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .slider-val {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    min-width: 54px;
+    text-align: right;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: .85rem;
+    margin-bottom: 2rem;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: .3rem; }
+
+  .prog-wrap { margin-bottom: 1.1rem; }
+  .prog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: .35rem;
+  }
+  .prog-name { font-size: 13px; color: var(--text); }
+  .prog-count { font-size: 12px; font-family: var(--mono); color: var(--muted); }
+  .prog-bar {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 99px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .prog-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+  .prog-fill.total  { background: var(--accent); }
+  .prog-fill.a1     { background: #5b8af0; }
+  .prog-fill.a2     { background: #818cf8; }
+  .prog-fill.b1     { background: #a78bfa; }
+  .prog-fill.b2     { background: #34d399; }
+  .prog-fill.c1     { background: #f5c842; }
+
+  .completion-date {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: var(--r);
+    padding: .85rem 1.1rem;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .completion-date span { color: var(--accent3); font-size: 14px; }
+
+  .cal-controls {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .cal-controls input[type="search"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--text);
+    padding: .45rem .85rem;
+    font-family: var(--sans);
+    font-size: 13px;
+    outline: none;
+    width: 160px;
+  }
+  .cal-controls input[type="search"]:focus { border-color: var(--accent); }
+  .week-filter select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--text);
+    padding: .45rem .75rem;
+    font-size: 13px;
+    font-family: var(--sans);
+    outline: none;
+  }
+
+  .week-block { margin-bottom: 1.75rem; }
+  .week-heading {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .65rem;
+    padding-left: .25rem;
+    border-left: 2px solid var(--border);
+    padding-left: .6rem;
+  }
+  .sessions-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: .85rem;
+  }
+
+  .session-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.1rem 1.2rem;
+    transition: border-color .2s, transform .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .session-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 99px 0 0 99px;
+  }
+  .session-card.thu::before { background: var(--accent); }
+  .session-card.fri::before { background: var(--accent2); }
+  .session-card.sat::before { background: var(--accent3); }
+  .session-card.done {
+    opacity: .55;
+    border-color: var(--border);
+  }
+  .session-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+  .session-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: .6rem;
+  }
+  .session-date { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+  .session-day-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-family: var(--mono);
+    letter-spacing: .08em;
+  }
+  .thu .session-day-badge { background: rgba(91,138,240,.18); color: var(--accent); }
+  .fri .session-day-badge { background: rgba(167,139,250,.18); color: var(--accent2); }
+  .sat .session-day-badge { background: rgba(52,211,153,.18); color: var(--accent3); }
+
+  .session-time { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-bottom: .5rem; }
+  .session-hours {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    color: #fff;
+    margin-bottom: .6rem;
+  }
+  .session-hours small { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  .page-allocs { list-style: none; margin-bottom: .9rem; }
+  .page-allocs li {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--muted);
+    padding: .2rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: .4rem;
+    align-items: flex-start;
+  }
+  .page-allocs li:last-child { border-bottom: none; }
+  .book-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: .35rem;
+  }
+  .dot-a1 { background: #5b8af0; }
+  .dot-a2 { background: #818cf8; }
+  .dot-b1 { background: #a78bfa; }
+  .dot-b2 { background: #34d399; }
+  .dot-c1 { background: #f5c842; }
+
+  .done-row {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .done-row input[type="checkbox"] { accent-color: var(--accent3); width: 15px; height: 15px; cursor: pointer; }
+  .done-row span { font-size: 12px; font-family: var(--mono); color: var(--muted); }
+
+  .levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: .75rem;
+  }
+  .level-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: .9rem 1rem;
+  }
+  .level-card-top {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    margin-bottom: .7rem;
+  }
+  .level-emoji { font-size: 18px; }
+  .level-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .level-book { font-size: 11px; font-family: var(--mono); color: var(--muted); }
+  .level-card select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: .4rem .65rem;
+    font-size: 12px;
+    font-family: var(--mono);
+    outline: none;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+  .btn {
+    padding: .55rem 1.2rem;
+    border-radius: var(--r);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    letter-spacing: .04em;
+  }
+  .btn:hover { background: var(--card); border-color: var(--accent); }
+  .btn.danger { border-color: rgba(248,113,113,.35); color: var(--danger); }
+  .btn.danger:hover { background: rgba(248,113,113,.08); border-color: var(--danger); }
+  .btn.primary { border-color: var(--accent); color: var(--accent); }
+  .btn.primary:hover { background: rgba(91,138,240,.1); }
+  .btn.success { border-color: var(--accent3); color: var(--accent3); }
+  .btn.success:hover { background: rgba(52,211,153,.1); }
+
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  .scroll-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 38px; height: 38px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 100;
+  }
+  .scroll-top.visible { opacity: 1; pointer-events: auto; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .sessions-row { grid-template-columns: 1fr; }
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: .6rem 1.2rem;
+    border-radius: 99px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  /* Email save panel */
+  .email-panel {
+    background: linear-gradient(135deg, rgba(91,138,240,0.08), rgba(167,139,250,0.05));
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .email-panel-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    letter-spacing: .1em;
+  }
+  .email-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Intensive Language Programme</div>
+    <h1>German Study Planner<br><em>A1 → C1</em></h1>
+    <div class="hero-sub">Begegnungen A1–B1 · Erkundungen B2–C1 · 1250 pages total</div>
+  </div>
+
+  <!-- EMAIL SAVE PANEL (Export/Import) -->
+  <div class="email-panel">
+    <div class="email-panel-title">📀 SAVE & SYNC YOUR PROGRESS</div>
+    <div class="email-buttons">
+      <button class="btn success" onclick="saveProgressToFile()">💾 Save Progress to File</button>
+      <button class="btn primary" onclick="loadProgressFromFile()">📂 Load Progress from File</button>
+      <button class="btn" onclick="emailProgressFile()">📧 Email Progress to Myself</button>
+    </div>
+    <div style="font-size: 11px; color: var(--muted); margin-top: 0.75rem; font-family: var(--mono);">
+      💡 Save your progress → email the file to yourself → load on any device
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Configuration</div>
+    <div class="control-card">
+      <div class="control-grid">
+        <div class="field">
+          <label>Start Date (first Thursday)</label>
+          <input type="date" id="startDate">
+        </div>
+        <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;">
+          <div class="slider-row">
+            <label>Reading speed</label>
+            <input type="range" id="speedSlider" min="5" max="20" value="10" step="1">
+            <span class="slider-val" id="speedVal">10 pp/hr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Level Status</div>
+    <div class="levels-grid" id="levelsGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Summary</div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="completion-date" id="completionDate">–</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Progress</div>
+    <div id="progressBars"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Weekly Schedule</div>
+    <div class="cal-controls">
+      <div class="week-filter">
+        <select id="weekFilter">
+          <option value="all">All weeks</option>
+          <option value="upcoming">Upcoming only</option>
+          <option value="done">Completed only</option>
+        </select>
+      </div>
+      <input type="search" id="searchInput" placeholder="Search book / page…">
+    </div>
+    <div id="calendarRoot"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn primary" onclick="exportSchedule()">⬇ Export Schedule as Text</button>
+    <button class="btn danger" onclick="resetProgress()">↺ Reset all progress</button>
+  </div>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════════ */
+const BOOKS = [
+  { id:'a1', label:'A1', emoji:'📘', name:'Begegnungen A1', pages:250, dotClass:'dot-a1', progClass:'a1' },
+  { id:'a2', label:'A2', emoji:'📘', name:'Begegnungen A2', pages:250, dotClass:'dot-a2', progClass:'a2' },
+  { id:'b1', label:'B1', emoji:'📘', name:'Begegnungen B1', pages:250, dotClass:'dot-b1', progClass:'b1' },
+  { id:'b2', label:'B2', emoji:'📗', name:'Erkundungen B2',  pages:250, dotClass:'dot-b2', progClass:'b2' },
+  { id:'c1', label:'C1', emoji:'📗', name:'Erkundungen C1',  pages:250, dotClass:'dot-c1', progClass:'c1' },
+];
+
+const SESSION_TEMPLATES = [
+  { dow:4, offsetDays:0, dayLabel:'THU', timeWindow:'5 PM → 3 AM', hours:10 },
+  { dow:5, offsetDays:1, dayLabel:'FRI', timeWindow:'5 PM → 10 PM', hours:5  },
+  { dow:6, offsetDays:2, dayLabel:'SAT', timeWindow:'7 PM → 12 AM', hours:5  },
+];
+
+const TOTAL_PAGES = BOOKS.reduce((s,b)=>s+b.pages,0);
+const WEEKLY_HOURS = SESSION_TEMPLATES.reduce((s,t)=>s+t.hours,0);
+
+const LS_PREFIX = 'dePlanner_';
+
+function lsGet(key, fallback) {
+  try { const v = localStorage.getItem(LS_PREFIX+key); return v!==null ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(LS_PREFIX+key, JSON.stringify(val)); } catch {}
+}
+
+let state = {
+  startDate : lsGet('startDate', null),
+  speed     : lsGet('speed', 10),
+  levels    : lsGet('levels', {a1:'not_started',a2:'not_started',b1:'not_started',b2:'not_started',c1:'not_started'}),
+  sessions  : lsGet('sessions', {}),
+};
+
+function addDays(date, n) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
+}
+function fmt(date) {
+  return new Date(date).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
+}
+function pct(part, total) {
+  return total > 0 ? Math.min(100, Math.round(part / total * 100)) : 0;
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function allocatePages(startPage, count) {
+  const result = [];
+  let remaining = count;
+  let globalIdx = startPage;
+  for (const book of BOOKS) {
+    if (remaining <= 0) break;
+    const bookStart = BOOKS.slice(0, BOOKS.indexOf(book)).reduce((s,b)=>s+b.pages,0);
+    const bookEnd   = bookStart + book.pages;
+    if (globalIdx >= bookEnd) continue;
+    if (globalIdx < bookStart) continue;
+    const posInBook  = globalIdx - bookStart;
+    const available  = book.pages - posInBook;
+    const take       = Math.min(remaining, available);
+    result.push({
+      book   : book,
+      from   : posInBook + 1,
+      to     : posInBook + take,
+    });
+    globalIdx += take;
+    remaining -= take;
+  }
+  return result;
+}
+
+function generateSchedule() {
+  if (!state.startDate) return [];
+  const pph = state.speed;
+  const totalHours = TOTAL_PAGES / pph;
+  const totalWeeks = Math.ceil(totalHours / WEEKLY_HOURS);
+  const sessions = [];
+  let pageCursor = 0;
+  for (let w = 0; w < totalWeeks; w++) {
+    const weekStart = addDays(new Date(state.startDate), w * 7);
+    for (const tmpl of SESSION_TEMPLATES) {
+      const sessionDate = addDays(weekStart, tmpl.offsetDays);
+      const pagesThisSession = tmpl.hours * pph;
+      const effectivePages = Math.min(pagesThisSession, TOTAL_PAGES - pageCursor);
+      if (effectivePages <= 0) break;
+      sessions.push({
+        id          : `w${w+1}_${tmpl.dayLabel}`,
+        week        : w + 1,
+        date        : sessionDate,
+        dayLabel    : tmpl.dayLabel,
+        dayClass    : tmpl.dayLabel.toLowerCase(),
+        timeWindow  : tmpl.timeWindow,
+        hours       : tmpl.hours,
+        pages       : effectivePages,
+        allocs      : allocatePages(pageCursor, effectivePages),
+      });
+      pageCursor += effectivePages;
+      if (pageCursor >= TOTAL_PAGES) break;
+    }
+    if (pageCursor >= TOTAL_PAGES) break;
+  }
+  return sessions;
+}
+
+function computeProgress(sessions) {
+  const done = {}; BOOKS.forEach(b=>done[b.id]=0);
+  for (const s of sessions) {
+    if (!state.sessions[s.id]) continue;
+    for (const alloc of s.allocs) {
+      done[alloc.book.id] += (alloc.to - alloc.from + 1);
+    }
+  }
+  return done;
+}
+
+function renderLevels() {
+  const g = document.getElementById('levelsGrid');
+  g.innerHTML = BOOKS.map(b => `
+    <div class="level-card">
+      <div class="level-card-top">
+        <div class="level-emoji">${b.emoji}</div>
+        <div class="level-name-wrap">
+          <div class="level-name">${b.label}</div>
+          <div class="level-book">${b.name}</div>
+        </div>
+      </div>
+      <select onchange="setLevel('${b.id}',this.value)">
+        <option value="not_started" ${state.levels[b.id]==='not_started'?'selected':''}>Not started</option>
+        <option value="started"     ${state.levels[b.id]==='started'?'selected':''}>In progress</option>
+        <option value="completed"   ${state.levels[b.id]==='completed'?'selected':''}>Completed ✓</option>
+      </select>
+    </div>
+  `).join('');
+}
+
+function renderStats(sessions) {
+  const pph      = state.speed;
+  const totalHrs = Math.ceil(TOTAL_PAGES / pph);
+  const totalWks = Math.ceil(totalHrs / WEEKLY_HOURS);
+  const progress = computeProgress(sessions);
+  const pagesD   = Object.values(progress).reduce((s,v)=>s+v,0);
+  const lastSession = sessions[sessions.length-1];
+  let completionStr = '—';
+  if (lastSession) completionStr = `<span>${fmt(lastSession.date)} (${lastSession.dayLabel} session)</span>`;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat"><div class="stat-val">${TOTAL_PAGES}</div><div class="stat-label">total pages</div></div>
+    <div class="stat"><div class="stat-val">${pph}</div><div class="stat-label">pages / hour</div></div>
+    <div class="stat"><div class="stat-val">${totalHrs}</div><div class="stat-label">hours needed</div></div>
+    <div class="stat"><div class="stat-val">${totalWks}</div><div class="stat-label">weeks total</div></div>
+    <div class="stat"><div class="stat-val">${WEEKLY_HOURS}</div><div class="stat-label">hours / week</div></div>
+    <div class="stat"><div class="stat-val">${pagesD}</div><div class="stat-label">pages done</div></div>
+  `;
+  document.getElementById('completionDate').innerHTML = `Estimated completion: ${completionStr}`;
+}
+
+function renderProgress(sessions) {
+  const progress = computeProgress(sessions);
+  const totalDone = Object.values(progress).reduce((s,v)=>s+v,0);
+  let html = `<div class="prog-wrap"><div class="prog-header"><span class="prog-name">Overall</span><span class="prog-count">${totalDone} / ${TOTAL_PAGES} pages</span></div><div class="prog-bar"><div class="prog-fill total" style="width:${pct(totalDone,TOTAL_PAGES)}%"></div></div></div>`;
+  for (const b of BOOKS) {
+    const done = progress[b.id] || 0;
+    html += `<div class="prog-wrap"><div class="prog-header"><span class="prog-name">${b.emoji} ${b.name}</span><span class="prog-count">${done} / ${b.pages}</span></div><div class="prog-bar"><div class="prog-fill ${b.progClass}" style="width:${pct(done,b.pages)}%"></div></div></div>`;
+  }
+  document.getElementById('progressBars').innerHTML = html;
+}
+
+function renderCalendar(sessions) {
+  const root   = document.getElementById('calendarRoot');
+  const filter = document.getElementById('weekFilter').value;
+  const query  = (document.getElementById('searchInput').value || '').toLowerCase();
+  if (!sessions.length) { root.innerHTML = '<div class="empty">Set a start date above to generate your schedule.</div>'; return; }
+  const byWeek = {};
+  for (const s of sessions) { if (!byWeek[s.week]) byWeek[s.week] = []; byWeek[s.week].push(s); }
+  const today = new Date(); today.setHours(0,0,0,0);
+  let html = '';
+  for (const [week, sess] of Object.entries(byWeek)) {
+    const filtered = sess.filter(s => {
+      const isDone = !!state.sessions[s.id];
+      const isPast = s.date < today;
+      if (filter === 'upcoming' && (isDone || isPast)) return false;
+      if (filter === 'done' && !isDone) return false;
+      if (query) { const text = s.allocs.map(a=>`${a.book.name} ${a.from} ${a.to}`).join(' ').toLowerCase(); if (!text.includes(query)) return false; }
+      return true;
+    });
+    if (!filtered.length) continue;
+    html += `<div class="week-block"><div class="week-heading">Week ${week} — starts ${fmt(filtered[0].date)}</div><div class="sessions-row">${filtered.map(s=>sessionCard(s)).join('')}</div></div>`;
+  }
+  root.innerHTML = html || '<div class="empty">No sessions match your filter.</div>';
+}
+
+function sessionCard(s) {
+  const isDone = !!state.sessions[s.id];
+  const allocsHtml = s.allocs.map(a=>`<li><span class="book-dot ${a.book.dotClass}"></span><span>${a.book.name}: pp. ${a.from}–${a.to} <span style="color:var(--muted);opacity:.6">(${a.to-a.from+1} pp)</span></span></li>`).join('');
+  return `<div class="session-card ${s.dayClass}${isDone?' done':''}" id="card_${s.id}"><div class="session-top"><div class="session-date">${fmt(s.date)}</div><div class="session-day-badge">${s.dayLabel}</div></div><div class="session-time">${s.timeWindow}</div><div class="session-hours">${s.hours}h <small>study</small></div><ul class="page-allocs">${allocsHtml}</ul><label class="done-row"><input type="checkbox" ${isDone?'checked':''} onchange="toggleSession('${s.id}',this.checked)"><span>${isDone ? 'Completed ✓' : 'Mark as done'}</span></label></div>`;
+}
+
+let _sessions = [];
+function render() {
+  _sessions = generateSchedule();
+  renderLevels();
+  renderStats(_sessions);
+  renderProgress(_sessions);
+  renderCalendar(_sessions);
+}
+
+/* ──────────── NEW: SAVE/LOAD/EMAIL PROGRESS ──────────── */
+function getFullState() {
+  return {
+    version: "1.0",
+    exportedAt: new Date().toISOString(),
+    startDate: state.startDate,
+    speed: state.speed,
+    levels: state.levels,
+    sessions: state.sessions
+  };
+}
+
+function applyFullState(data) {
+  if (data.version) {
+    state.startDate = data.startDate;
+    state.speed = data.speed;
+    state.levels = data.levels;
+    state.sessions = data.sessions;
+    lsSet('startDate', state.startDate);
+    lsSet('speed', state.speed);
+    lsSet('levels', state.levels);
+    lsSet('sessions', state.sessions);
+    document.getElementById('startDate').value = state.startDate || '';
+    document.getElementById('speedSlider').value = state.speed;
+    document.getElementById('speedVal').textContent = state.speed + ' pp/hr';
+    render();
+    toast('Progress loaded successfully!');
+  } else {
+    toast('Invalid file format');
+  }
+}
+
+function saveProgressToFile() {
+  const data = getFullState();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  a.href = url;
+  a.download = `german-progress-${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Progress saved to file!');
+}
+
+function loadProgressFromFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        applyFullState(data);
+      } catch(err) {
+        toast('Error reading file');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function emailProgressFile() {
+  const data = getFullState();
+  const jsonStr = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonStr], {type: 'application/json'});
+  const file = new File([blob], `german-progress-${new Date().toISOString().slice(0,10)}.json`, {type: 'application/json'});
+  const url = URL.createObjectURL(file);
+  const mailto = `mailto:?subject=My German Study Progress&body=I've attached my progress file. Save it and use "Load Progress" on the planner.&attachment=${encodeURIComponent(url)}`;
+  window.location.href = mailto;
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('Opening email... attach the file manually if needed');
+}
+/* ──────────────────────────────────────────────────────── */
+
+document.getElementById('startDate').addEventListener('change', function() {
+  state.startDate = this.value;
+  lsSet('startDate', state.startDate);
+  render();
+});
+const slider = document.getElementById('speedSlider');
+const speedLabel = document.getElementById('speedVal');
+slider.value = state.speed;
+speedLabel.textContent = state.speed + ' pp/hr';
+slider.addEventListener('input', function() {
+  state.speed = parseInt(this.value);
+  speedLabel.textContent = state.speed + ' pp/hr';
+  lsSet('speed', state.speed);
+  render();
+});
+function setLevel(id, val) {
+  state.levels[id] = val;
+  lsSet('levels', state.levels);
+  render();
+}
+function toggleSession(id, checked) {
+  state.sessions[id] = checked;
+  lsSet('sessions', state.sessions);
+  renderStats(_sessions);
+  renderProgress(_sessions);
+  const card = document.getElementById('card_'+id);
+  if (card) card.classList.toggle('done', checked);
+}
+document.getElementById('weekFilter').addEventListener('change', () => renderCalendar(_sessions));
+document.getElementById('searchInput').addEventListener('input', () => renderCalendar(_sessions));
+function resetProgress() {
+  if (!confirm('Reset ALL session checkboxes?')) return;
+  state.sessions = {};
+  lsSet('sessions', state.sessions);
+  render();
+  toast('Progress reset.');
+}
+function exportSchedule() {
+  if (!_sessions.length) { toast('Generate a schedule first.'); return; }
+  let out = 'GERMAN STUDY PLAN — A1→C1\n' + '='.repeat(50) + `\nSpeed: ${state.speed} pages/hour | Total: ${TOTAL_PAGES} pages\n\n`;
+  let curWeek = 0;
+  for (const s of _sessions) {
+    if (s.week !== curWeek) { curWeek = s.week; out += `\n── WEEK ${s.week} ──\n`; }
+    const done = state.sessions[s.id] ? '[X]' : '[ ]';
+    out += `${done} ${fmt(s.date)} ${s.dayLabel} ${s.timeWindow} (${s.hours}h)\n`;
+    for (const a of s.allocs) out += `    ${a.book.name}: pp. ${a.from}–${a.to}\n`;
+  }
+  const blob = new Blob([out], {type:'text/plain'});
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'german-study-plan.txt';
+  a.click();
+  toast('Exported!');
+}
+window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400); });
+if (state.startDate) document.getElementById('startDate').value = state.startDate;
+if (!state.startDate) {
+  const today = new Date();
+  const diff  = (4 - today.getDay() + 7) % 7 || 7;
+  const nextThu = addDays(today, diff);
+  const iso = nextThu.toISOString().split('T')[0];
+  document.getElementById('startDate').value = iso;
+  state.startDate = iso;
+  lsSet('startDate', iso);
+}
+render();
+</script>
+</body>
+</html>
